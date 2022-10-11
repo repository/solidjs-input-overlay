@@ -1,4 +1,4 @@
-import { createEffect, createSignal, ParentComponent, Switch, Match } from "solid-js";
+import { createEffect, createSignal, ParentComponent } from "solid-js";
 import { useInputState } from "../App";
 import { OneOf } from "../util";
 
@@ -13,6 +13,7 @@ const Key: ParentComponent<
   const [active, setActive] = createSignal(false);
 
   createEffect(() => {
+    if (!inputState) return;
     if (typeof props.keycode === "number") {
       setActive(inputState.keys[props.keycode] ?? false);
     } else if (typeof props.scroll === "string") {
@@ -25,17 +26,15 @@ const Key: ParentComponent<
   return (
     <div class="p-0.5">
       <div
-        class={`flex bg-white font-medium text-4xl items-center border-4 rounded-xl border-black justify-center transform transition-all duration-150 ${
-          active() ? "scale-95 text-white bg-black" : ""
+        class={`flex bg-key-inactive-bg text-key-inactive-text font-medium text-4xl items-center border-4 rounded-xl border-key-inactive-ring justify-center transform transition-all duration-150 ${
+          active() ? "scale-95 !border-key-active-ring !text-key-active-text !bg-key-active-bg" : ""
         }`}
         style={{
           width: `${(props.width ?? 1) * 6}rem`,
           height: `${(props.height ?? 1) * 6}rem`,
         }}
       >
-        <Switch fallback={props.children}>
-          <Match when={typeof props.scroll === "string" && active()}>{inputState.scroll[props.scroll]}</Match>
-        </Switch>
+        {typeof props.scroll === "string" && active() && inputState ? inputState.scroll[props.scroll] : props.children}
       </div>
     </div>
   );

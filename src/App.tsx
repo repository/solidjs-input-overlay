@@ -87,7 +87,9 @@ const App: Component = () => {
         return;
       }
 
-      if (isMouseMovedEvent(event)) return;
+      if (isMouseMovedEvent(event)) {
+        return;
+      }
     },
     (msg) => console.error(msg),
   );
